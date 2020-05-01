@@ -8,6 +8,9 @@ import dateutil.parser
 import babel
 
 from models import setup_db, Movie, Actor, db
+from auth import AuthError, requires_auth
+
+# https://udacity.eu.auth0.com/authorize?audience=casting&response_type=token&client_id=E7jCXUVwJ5I8s1RcWjrqLHDyjraKq22C&redirect_uri=https://127.0.0.1:5000/login-result
 
 def create_app(test_config=None):
     # create and configure the app
@@ -15,7 +18,7 @@ def create_app(test_config=None):
     app.secret_key = "super secret key"
     setup_db(app)
 
-    CORS(app, resources={r"*/*": {"origins": "*"}})
+    CORS(app)
 
     
     def format_datetime(value, format='medium'):
@@ -39,7 +42,7 @@ def create_app(test_config=None):
   for all available movies.
   '''
     @app.route("/movies", methods=['GET'])
-    @cross_origin()
+    #@cross_origin()
     def get_movies():
         movies = Movie.query.all()
 
@@ -64,20 +67,20 @@ def create_app(test_config=None):
   '''
 
     @app.route("/movies/<int:movie_id>", methods=['DELETE'])
-    @cross_origin()
-    def delete_movie(movie_id):
+    @requires_auth('delete:movies')
+    #@cross_origin()
+    def delete_movie(payload, movie_id):
 
         try:
             Movie.query.filter(Movie.id == movie_id).one_or_none().delete()
-        except Exception as e:
-            print(f'Error deleting movie', e)
-            abort(404)
 
-        return jsonify({
-            'success': True,
-            'message': "Movie successfully deleted.",
-            'deleted': movie_id
-        })
+            return jsonify({
+                'success': True,
+                'message': "Movie successfully deleted.",
+                'deleted': movie_id
+            })
+        except BaseException:
+            abort(404)
 
     '''
   @:
@@ -87,47 +90,53 @@ def create_app(test_config=None):
   '''
 
     @app.route("/movies", methods=['POST'])
-    @cross_origin()
-    def add_movie():
+    @requires_auth('post:movies')
+    #@cross_origin()
+    def add_movie(payload):
+        try:
+            new_movie = Movie(
+                title="Test Title 3",
+                releaseDate=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            )
 
-        new_movie = Movie(
-            title="Test Title 3",
-            releaseDate=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        )
+            new_movie.insert()
 
-        new_movie.insert()
-
-        return jsonify({
-            'success': True,
-            'movies': new_movie.format(),
-            'created': new_movie.id,
-            'total_movies': len(Movie.query.all())
-        })
+            return jsonify({
+                'success': True,
+                'movies': new_movie.format(),
+                'created': new_movie.id,
+                'total_movies': len(Movie.query.all())
+            })
+        except AuthError:
+            abort(422)
 
     '''
     edit existing movie
     '''
     @app.route("/movies/<int:movie_id>", methods=['PATCH'])
-    @cross_origin()
-    def edit_movie(movie_id):
+    @requires_auth('patch:movies')
+    #@cross_origin()
+    def edit_movie(payload, movie_id):
+        try:
+            title_update = 'Updated Title'
+            release_date_update = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            update_movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
 
-        title_update = 'Updated Title'
-        release_date_update = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        update_movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
+            if update_movie is None:
+                abort(404)
 
-        if update_movie is None:
-            abort(404)
+            update_movie.title = title_update
+            update_movie.releaseDate = release_date_update
 
-        update_movie.title = title_update
-        update_movie.releaseDate = release_date_update
+            update_movie.update()
 
-        update_movie.update()
-
-        return jsonify({
-            'success': True,
-            'movies': update_movie.format(),
-            'total_movies': len(Movie.query.all())
-        })
+            return jsonify({
+                'success': True,
+                'movies': update_movie.format(),
+                'total_movies': len(Movie.query.all())
+            })
+        except AuthError:
+            abort(422)
 
 
     '''
@@ -141,7 +150,7 @@ def create_app(test_config=None):
   for all available actors.
   '''
     @app.route("/actors", methods=['GET'])
-    @cross_origin()
+    #@cross_origin()
     def get_actors():
         actors = Actor.query.all()
 
@@ -166,20 +175,20 @@ def create_app(test_config=None):
   '''
 
     @app.route("/actors/<int:actor_id>", methods=['DELETE'])
-    @cross_origin()
-    def delete_actor(actor_id):
+    @requires_auth('delete:actors')
+    #@cross_origin()
+    def delete_actor(payload, actor_id):
 
         try:
             Actor.query.filter(Actor.id == actor_id).one_or_none().delete()
-        except Exception as e:
-            print(f'Error deleting actor', e)
-            abort(404)
 
-        return jsonify({
-            'success': True,
-            'message': "Actor successfully deleted.",
-            'deleted': actor_id
-        })
+            return jsonify({
+                'success': True,
+                'message': "Actor successfully deleted.",
+                'deleted': actor_id
+            })
+        except BaseException:
+            abort(404)
 
     '''
   @:
@@ -189,50 +198,56 @@ def create_app(test_config=None):
   '''
 
     @app.route("/actors", methods=['POST'])
-    @cross_origin()
-    def add_actor():
+    @requires_auth('post:actor')
+    #@cross_origin()
+    def add_actor(payload):
+        try: 
+            new_actor = Actor(
+                name="Hugo",
+                age=42,
+                gender="M"
+            )
 
-        new_actor = Actor(
-            name="Hugo",
-            age=42,
-            gender="M"
-        )
+            new_actor.insert()
 
-        new_actor.insert()
-
-        return jsonify({
-            'success': True,
-            'actors': new_actor.format(),
-            'created': new_actor.id,
-            'total_actors': len(Actor.query.all())
-        })
+            return jsonify({
+                'success': True,
+                'actors': new_actor.format(),
+                'created': new_actor.id,
+                'total_actors': len(Actor.query.all())
+            })
+        except AuthError:
+            abort(422)
 
     '''
     edit existing actor
     '''
     @app.route("/actors/<int:actor_id>", methods=['PATCH'])
-    @cross_origin()
-    def edit_actor(actor_id):
+    @requires_auth('patch:actors')
+    #@cross_origin()
+    def edit_actor(payload, actor_id):
+        try:
+            name_update = 'Updated Name'
+            age_update = 34
+            gender_update = "F"
+            update_actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
 
-        name_update = 'Updated Name'
-        age_update = 34
-        gender_update = "F"
-        update_actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+            if update_actor is None:
+                abort(404)
 
-        if update_actor is None:
-            abort(404)
+            update_actor.name = name_update
+            update_actor.age = age_update
+            update_actor.gender = gender_update
 
-        update_actor.name = name_update
-        update_actor.age = age_update
-        update_actor.gender = gender_update
+            update_actor.update()
 
-        update_actor.update()
-
-        return jsonify({
-            'success': True,
-            'actors': update_actor.format(),
-            'total_actors': len(Actor.query.all())
-        })
+            return jsonify({
+                'success': True,
+                'actors': update_actor.format(),
+                'total_actors': len(Actor.query.all())
+            })
+        except AuthError:
+            abort(422)
 
 
 
@@ -282,5 +297,13 @@ def create_app(test_config=None):
             "error": 422,
             "message": "Sent instructions are unprocessable"
         }), 422
+
+    @app.errorhandler(AuthError)
+    def invalid_claims(error):
+        return jsonify({
+            "success": False,
+            "error": 401,
+            "message": error.__dict__
+        }), 401
 
     return app
