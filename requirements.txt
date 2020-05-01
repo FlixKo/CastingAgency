@@ -16,7 +16,6 @@ colorama==0.3.7
 configobj==5.0.6
 constantly==15.1.0
 cryptography==2.1.4
-distro-info===0.18ubuntu0.18.04.1
 docutils==0.15.2
 ecdsa==0.13.2
 Flask==1.0.2
