@@ -12,6 +12,7 @@ from auth import AuthError, requires_auth
 
 # https://udacity.eu.auth0.com/authorize?audience=casting&response_type=token&client_id=E7jCXUVwJ5I8s1RcWjrqLHDyjraKq22C&redirect_uri=https://127.0.0.1:5000/login-result
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -20,13 +21,12 @@ def create_app(test_config=None):
 
     CORS(app)
 
-    
     def format_datetime(value, format='medium'):
         date = dateutil.parser.parse(value)
         if format == 'full':
-            format="EEEE MMMM, d, y 'at' h:mma"
+            format = "EEEE MMMM, d, y 'at' h:mma"
         elif format == 'medium':
-            format="EE MM, dd, y h:mma"
+            format = "EE MM, dd, y h:mma"
         return babel.dates.format_datetime(date, format)
 
         app.jinja_env.filters['datetime'] = format_datetime
@@ -35,14 +35,13 @@ def create_app(test_config=None):
     MOVIES
     '''
 
-
     '''
   @:
   Create an endpoint to handle GET requests
   for all available movies.
   '''
     @app.route("/movies", methods=['GET'])
-    #@cross_origin()
+    # @cross_origin()
     def get_movies():
         movies = Movie.query.all()
 
@@ -59,7 +58,6 @@ def create_app(test_config=None):
             'total_movies': len(movies)
         })
 
-   
     '''
   @:
   Create an endpoint to DELETE movie using a movie ID.
@@ -68,7 +66,7 @@ def create_app(test_config=None):
 
     @app.route("/movies/<int:movie_id>", methods=['DELETE'])
     @requires_auth('delete:movies')
-    #@cross_origin()
+    # @cross_origin()
     def delete_movie(payload, movie_id):
 
         try:
@@ -91,7 +89,7 @@ def create_app(test_config=None):
 
     @app.route("/movies", methods=['POST'])
     @requires_auth('post:movies')
-    #@cross_origin()
+    # @cross_origin()
     def add_movie(payload):
         try:
             new_movie = Movie(
@@ -115,12 +113,13 @@ def create_app(test_config=None):
     '''
     @app.route("/movies/<int:movie_id>", methods=['PATCH'])
     @requires_auth('patch:movies')
-    #@cross_origin()
+    # @cross_origin()
     def edit_movie(payload, movie_id):
         try:
             title_update = 'Updated Title'
             release_date_update = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            update_movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
+            update_movie = Movie.query.filter(
+                Movie.id == movie_id).one_or_none()
 
             if update_movie is None:
                 abort(404)
@@ -138,11 +137,9 @@ def create_app(test_config=None):
         except AuthError:
             abort(422)
 
-
     '''
     ACTORS
     '''
-
 
     '''
   @:
@@ -150,7 +147,7 @@ def create_app(test_config=None):
   for all available actors.
   '''
     @app.route("/actors", methods=['GET'])
-    #@cross_origin()
+    # @cross_origin()
     def get_actors():
         actors = Actor.query.all()
 
@@ -167,7 +164,6 @@ def create_app(test_config=None):
             'total_actors': len(actors)
         })
 
-   
     '''
   @:
   Create an endpoint to DELETE actor using a actor ID.
@@ -176,7 +172,7 @@ def create_app(test_config=None):
 
     @app.route("/actors/<int:actor_id>", methods=['DELETE'])
     @requires_auth('delete:actors')
-    #@cross_origin()
+    # @cross_origin()
     def delete_actor(payload, actor_id):
 
         try:
@@ -199,9 +195,9 @@ def create_app(test_config=None):
 
     @app.route("/actors", methods=['POST'])
     @requires_auth('post:actor')
-    #@cross_origin()
+    # @cross_origin()
     def add_actor(payload):
-        try: 
+        try:
             new_actor = Actor(
                 name="Hugo",
                 age=42,
@@ -224,13 +220,14 @@ def create_app(test_config=None):
     '''
     @app.route("/actors/<int:actor_id>", methods=['PATCH'])
     @requires_auth('patch:actors')
-    #@cross_origin()
+    # @cross_origin()
     def edit_actor(payload, actor_id):
         try:
             name_update = 'Updated Name'
             age_update = 34
             gender_update = "F"
-            update_actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+            update_actor = Actor.query.filter(
+                Actor.id == actor_id).one_or_none()
 
             if update_actor is None:
                 abort(404)
@@ -248,10 +245,6 @@ def create_app(test_config=None):
             })
         except AuthError:
             abort(422)
-
-
-
-
 
     '''
   Error handlers for all expected errors
@@ -280,7 +273,6 @@ def create_app(test_config=None):
             "error": 404,
             "message": "Not found"
         }), 404
-    
 
     @app.errorhandler(405)
     def not_allowed(error):
