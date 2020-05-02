@@ -9,10 +9,10 @@ https://casting-agency-200501.herokuapp.com/
 
 # Authentication
 This app uses Auth0 as Authentication provider.
-Application Name: CastingAgency
-Application Domain: udacity.eu.auth0.com
-ClientID: E7jCXUVwJ5I8s1RcWjrqLHDyjraKq22C
-LoginLink: https://udacity.eu.auth0.com/authorize?audience=casting&response_type=token&client_id=E7jCXUVwJ5I8s1RcWjrqLHDyjraKq22C&redirect_uri=https://casting-agency-200501.herokuapp.com/login-result
+- Application Name: CastingAgency
+- Application Domain: udacity.eu.auth0.com
+- ClientID: E7jCXUVwJ5I8s1RcWjrqLHDyjraKq22C
+- LoginLink: https://udacity.eu.auth0.com/authorize?audience=casting&response_type=token&client_id=E7jCXUVwJ5I8s1RcWjrqLHDyjraKq22C&redirect_uri=https://casting-agency-200501.herokuapp.com/login-result
 
 The Logininformation to update the JWT are as follows:
 - castingdirector@test.de Test1234
@@ -20,32 +20,42 @@ The Logininformation to update the JWT are as follows:
 - executive@test.de Test1234
 
 # API:
-- GET /movies
--- list available movies
--- curl -X GET http://127.0.0.1:5000/movies
--- {"movies":[{"id":1,"releaseDate":"Fri, 01 May 2020 17:03:59 GMT","title":"Updated Title"}],"success":true,"total_movies":1}
+## GET /movies
+- list available movies
+- curl -X GET http://127.0.0.1:5000/movies
+### Response
+```
+ {"movies":[{"id":1,"releaseDate":"Fri, 01 May 2020 17:03:59 GMT","title":"Updated Title"}],"success":true,"total_movies":1}
+```
 
-- GET /actors
--- list available actors
--- curl -X GET http://127.0.0.1:5000/actors
--- {"actors":[{"age":42,"gender":"M","id":3,"name":"Hugo"}],"success":true,"total_actors":1}
 
-- POST /movies
--- create a new movie
+## GET /actors
+- list available actors
+- curl -X GET http://127.0.0.1:5000/actors
+### Response
+```
+ {"actors":[{"age":42,"gender":"M","id":3,"name":"Hugo"}],"success":true,"total_actors":1}
+```
 
-- DELTE /movies/<movie_id>
--- deletes the movie with corresponding id
+## POST /movies
+- create a new movie
 
-- PATCH /movies/<movie_id>
--- changes the movie with the corresponding id
+## DELTE /movies/<movie_id>
+- deletes the movie with corresponding id
+
+## PATCH /movies/<movie_id>
+- changes the movie with the corresponding id
+
 
 # Roles:
-- Casting Assistant
--- Can view actors and movies
-- Casting Director
--- All permissions a Casting Assistant has and…
--- Add or delete an actor from the database
--- Modify actors or movies
-- Executive Producer
--- All permissions a Casting Director has and…
--- Add or delete a movie from the database
+## Casting Assistant
+- Can view actors and movies
+
+## Casting Director
+- All permissions a Casting Assistant has and…
+- Add or delete an actor from the database
+- Modify actors or movies
+
+## Executive Producer
+- All permissions a Casting Director has and…
+- Add or delete a movie from the database

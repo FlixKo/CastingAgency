@@ -10,13 +10,14 @@ import babel
 from models import setup_db, Movie, Actor, db
 from auth import AuthError, requires_auth
 
-#def create_app(test_config=None):
-    # create and configure the app
+# def create_app(test_config=None):
+# create and configure the app
 app = Flask(__name__, instance_relative_config=True)
 app.secret_key = "super secret key"
 setup_db(app)
 
 CORS(app)
+
 
 def format_datetime(value, format='medium'):
     date = dateutil.parser.parse(value)
@@ -27,6 +28,7 @@ def format_datetime(value, format='medium'):
     return babel.dates.format_datetime(date, format)
 
     app.jinja_env.filters['datetime'] = format_datetime
+
 
 '''
 MOVIES
@@ -55,11 +57,13 @@ def get_movies():
         'total_movies': len(movies)
     })
 
+
 '''
 @:
 Create an endpoint to DELETE movie using a movie ID.
 
 '''
+
 
 @app.route("/movies/<int:movie_id>", methods=['DELETE'])
 @requires_auth('delete:movies')
@@ -77,12 +81,14 @@ def delete_movie(payload, movie_id):
     except BaseException:
         abort(404)
 
+
 '''
 @:
 Create an endpoint to POST a new movie,
 which will require its title and release date.
 
 '''
+
 
 @app.route("/movies", methods=['POST'])
 @requires_auth('post:movies')
@@ -104,6 +110,7 @@ def add_movie(payload):
         })
     except AuthError:
         abort(422)
+
 
 '''
 edit existing movie
@@ -134,6 +141,7 @@ def edit_movie(payload, movie_id):
     except AuthError:
         abort(422)
 
+
 '''
 ACTORS
 '''
@@ -161,11 +169,13 @@ def get_actors():
         'total_actors': len(actors)
     })
 
+
 '''
 @:
 Create an endpoint to DELETE actor using a actor ID.
 
 '''
+
 
 @app.route("/actors/<int:actor_id>", methods=['DELETE'])
 @requires_auth('delete:actors')
@@ -183,12 +193,14 @@ def delete_actor(payload, actor_id):
     except BaseException:
         abort(404)
 
+
 '''
 @:
 Create an endpoint to POST a new actor,
 which will require its name, age and gender.
 
 '''
+
 
 @app.route("/actors", methods=['POST'])
 @requires_auth('post:actor')
@@ -211,6 +223,7 @@ def add_actor(payload):
         })
     except AuthError:
         abort(422)
+
 
 '''
 edit existing actor
@@ -243,6 +256,7 @@ def edit_actor(payload, actor_id):
     except AuthError:
         abort(422)
 
+
 '''
 Error handlers for all expected errors
 
@@ -255,6 +269,7 @@ def server_error(error):
         "message": "Internal Server Error"
     }), 500
 
+
 @app.errorhandler(400)
 def bad_request(error):
     return jsonify({
@@ -262,6 +277,7 @@ def bad_request(error):
         "error": 400,
         "message": "Bad request"
     }), 400
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -271,6 +287,7 @@ def not_found(error):
         "message": "Not found"
     }), 404
 
+
 @app.errorhandler(405)
 def not_allowed(error):
     return jsonify({
@@ -278,6 +295,7 @@ def not_allowed(error):
         "error": 405,
         "message": "Method not allowed"
     }), 405
+
 
 @app.errorhandler(422)
 def unprocessable(error):
@@ -287,6 +305,7 @@ def unprocessable(error):
         "message": "Sent instructions are unprocessable"
     }), 422
 
+
 @app.errorhandler(AuthError)
 def invalid_claims(error):
     return jsonify({
@@ -295,4 +314,4 @@ def invalid_claims(error):
         "message": error.__dict__
     }), 401
 
-    #return app
+    # return app
