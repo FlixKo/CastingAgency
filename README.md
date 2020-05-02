@@ -7,6 +7,44 @@ This API lets Casting Assistants, Casting Directors, Executive Producers read, a
 The App is deployed on Heroku on the following link:
 https://casting-agency-200501.herokuapp.com/
 
+# Pre-requisites and Local Development
+- Python 3.7
+- Virtual Environment
+- PIP Dependencies
+- Flask
+- SQLAlchemy and Flask-SQLAlchemy
+- Jose JavaScript Object Signing and Encryption
+
+# Backend
+Once you have your virtual environment setup and running, install dependencies by running:
+```
+pip install -r requirements.txt
+```
+This will install all of the required packages we selected within the requirements.txt file.
+
+# Postgres
+To run this project you will need to set up the Postgres database, you can load the backup below with sample data:
+```
+psql casting < casting.psql
+```
+
+# Running the server
+Run the setup script with the required environment variables and initialize Flask:
+```
+source setup.sh
+export FLASK_APP=app.py
+flask run --reload
+```
+
+# Unit Tests
+All the tests were implemented in test_app.py:
+```
+dropdb casting_test
+createdb casting_test
+psql casting_test < casting.psql
+python test_app.py
+```
+
 # Authentication
 This app uses Auth0 as Authentication provider.
 - Application Name: CastingAgency
