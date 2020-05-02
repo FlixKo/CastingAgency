@@ -3,6 +3,22 @@ Udacity Full Stack Developer Course Final Project
 
 This API lets Casting Assistants, Casting Directors, Executive Producers read, add, change and delete movies and actors.
 
+# Heroku
+The App is deployed on Heroku on the following link:
+https://casting-agency-200501.herokuapp.com/
+
+# Authentication
+This app uses Auth0 as Authentication provider.
+Application Name: CastingAgency
+Application Domain: udacity.eu.auth0.com
+ClientID: E7jCXUVwJ5I8s1RcWjrqLHDyjraKq22C
+LoginLink: https://udacity.eu.auth0.com/authorize?audience=casting&response_type=token&client_id=E7jCXUVwJ5I8s1RcWjrqLHDyjraKq22C&redirect_uri=https://casting-agency-200501.herokuapp.com/login-result
+
+The Logininformation to update the JWT are as follows:
+- castingdirector@test.de Test1234
+- castingdirector@test.de Test1234
+- executive@test.de Test1234
+
 # API:
 - GET /movies
 -- list available movies

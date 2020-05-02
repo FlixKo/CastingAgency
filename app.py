@@ -10,10 +10,6 @@ import babel
 from models import setup_db, Movie, Actor, db
 from auth import AuthError, requires_auth
 
-# https://udacity.eu.auth0.com/authorize?audience=casting&response_type=token&client_id=E7jCXUVwJ5I8s1RcWjrqLHDyjraKq22C&redirect_uri=https://127.0.0.1:5000/login-result
-
-
-
 #def create_app(test_config=None):
     # create and configure the app
 app = Flask(__name__, instance_relative_config=True)
